@@ -1,6 +1,7 @@
 // Rewrite of the Faceless Void Time Walk ability
 // Author: Pizzalol
-// Date: 21.09.2015.
+// Edit: YOLOSPAGHETTI
+// Date: 1.14.2016.
 "faceless_void_time_walk_datadriven"
 {
 	// General
@@ -22,16 +23,16 @@
 	
 	// Casting
 	//-------------------------------------------------------------------------------------------------------------
-	"AbilityCastRange"				"700 900 1100 1300"
-	"AbilityCastPoint"				"0.35 0.35 0.35 0.35"
+	"AbilityCastRange"				"625"
+	"AbilityCastPoint"				"0.2 0.2 0.2 0.2"
 
 	// Time		
 	//-------------------------------------------------------------------------------------------------------------
-	"AbilityCooldown"				"19.0 17.0 15.0 13.0"
+	"AbilityCooldown"				"24.0 18.0 12.0 6.0"
 
 	// Cost
 	//-------------------------------------------------------------------------------------------------------------
-	"AbilityManaCost"				"90"
+	"AbilityManaCost"				"40"
 
 	// Stats
 	//-------------------------------------------------------------------------------------------------------------
@@ -48,31 +49,16 @@
 		}
 		"02"
 		{
-			"var_type"				"FIELD_INTEGER"
-			"radius"				"300"
+			"var_type"				"FIELD_FLOAT"
+			"backtrack_time"			"2.0"
 		}
 		"03"
 		{
-			"var_type"				"FIELD_FLOAT"
-			"duration"				"3.0"
-		}
-		"04"
-		{
 			"var_type"				"FIELD_INTEGER"
-			"movement_speed_pct"	"-20 -30 -40 -50"
-		}
-		"05"
-		{
-			"var_type"				"FIELD_INTEGER"
-			"attack_speed_pct"		"-20 -30 -40 -50"
-		}
-		"06"
-		{
-			"var_type"				"FIELD_INTEGER"
-			"tooltip_range"		"700 900 1100 1300"
+			"tooltip_range"		"625"
 		}
 	}
-
+	
 	"OnSpellStart"
 	{
 		"FireSound"
@@ -99,10 +85,11 @@
 
 		"RunScript"
 		{
-			"ScriptFile"	"scripts/vscripts/heroes/hero_faceless_void/time_walk.lua"
+			//"ScriptFile"	"scripts/vscripts/heroes/hero_faceless_void/time_walk.lua"
+			"ScriptFile"	"time_walk.lua"
 			"Function"		"TimeWalk"
 			"Target"		"POINT"
-			"caster_aura"		"modifier_time_walk_slow_aura_datadriven"
+			"modifier"		"modifier_time_walk_datadriven"
 		}
 
 		"ApplyMotionController"
@@ -113,21 +100,47 @@
 		    	"Center"	"CASTER"
 		    	"Flags"     "DOTA_UNIT_TARGET_FLAG_INVULNERABLE"
 		    }
-		    "ScriptFile"    "heroes/hero_faceless_void/time_walk.lua"
+		    //"ScriptFile"    "heroes/hero_faceless_void/time_walk.lua"
+			"ScriptFile"	"time_walk.lua"
 		    "HorizontalControlFunction" "TimeWalkMotion"  
+		}
+		
+		"RunScript"
+		{
+			//"ScriptFile"	"scripts/vscripts/heroes/hero_faceless_void/time_walk.lua"
+			"ScriptFile"	"time_walk.lua"
+			"Function"		"RemoveDamage"
+			"BacktrackTime"	"%backtrack_time"
 		}
 	}
 
 	"Modifiers"
 	{
-		"modifier_time_walk_slow_aura_datadriven"
+		"modifier_damage_checker_datadriven"
+		{
+			"Passive"	"1"
+			"IsHidden"	"1"
+			
+			"OnTakeDamage"
+			{	
+				"RunScript"
+				{
+					//"ScriptFile"	"scripts/vscripts/heroes/hero_faceless_void/time_walk.lua"
+					"ScriptFile"	"time_walk.lua"
+					"Function"		"CalculateDamage"
+					"DamageTaken"	"%attack_damage"
+					"BacktrackTime"	"%backtrack_time"
+				}
+			}
+		}
+	
+		"modifier_time_walk_datadriven"
 		{
 			"IsHidden"	"1"
 
-			"Aura" 			"modifier_time_walk_slow_datadriven"
-			"Aura_Radius" 	"%radius"
-			"Aura_Teams" 	"DOTA_UNIT_TARGET_TEAM_ENEMY"
-			"Aura_Types" 	"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+			// Use this if you want to achieve a "time walk" effect for heroes other than faceless
+			//"EffectName"		"particles/units/heroes/hero_faceless_void/faceless_void_chrono_speed.vpcf"
+			//"EffectAttachType"	"follow_origin"
 
 			"OnDestroy"
 			{
@@ -143,28 +156,11 @@
 					}
 				}
 			}
-
-			// Use this if you want to achieve a "time walk" effect for heroes other than faceless
-			//"EffectName"		"particles/units/heroes/hero_faceless_void/faceless_void_chrono_speed.vpcf"
-			//"EffectAttachType"	"follow_origin"
-
+			
 			"States"
 			{
 				"MODIFIER_STATE_INVULNERABLE"		"MODIFIER_STATE_VALUE_ENABLED"
 			}
 		}
-
-		"modifier_time_walk_slow_datadriven"
-		{
-			"Duration"	"%duration"
-			"IsDebuff"	"1"
-
-			"Properties"
-			{
-				"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"	"%movement_speed_pct"
-				"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT"	"%attack_speed_pct"
-			}
-		}
 	}
 }
-
