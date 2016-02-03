@@ -1,11 +1,10 @@
 // Rewrite of the Obsidian Destroyer Astral Imprisonment
 // Author: chrislotix
 // Date: 06.01.2015.
-// Changed: 27.04.2015.
-// Changed by: Pizzalol
-// Reason: Improved the AI hiding method
-"obsidian_destroyer_astral_imprisonment_datadriven"
-{
+// Changed: 02.03.2016
+// Changed by: YOLOSPAGHETTI
+// Reason: Removed int steal, added damage, and adjusted kvs
+
 "obsidian_destroyer_astral_imprisonment_datadriven"
 {
 	// General
@@ -157,8 +156,6 @@
 			}				
 		}
 	}
-}
-
 }
 
 
